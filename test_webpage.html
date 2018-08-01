@@ -1,0 +1,82 @@
+<html>
+
+<body>
+	<center>
+	What is <b id="num1"> <b id="op"> <b id="num2">?
+	</center>
+
+	<div id="counter">0</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="setImmediate.js"></script>
+	<script>
+		var count = 0;
+		// setInterval(function() { 
+		// 	count++;
+		// 	$("#counter").html(count);
+		// 	if (count % 200 === 0) document.body.style.backgroundColor = "#00FF00"; 
+		// 	else document.body.style.backgroundColor = "#FFFFFF"; 
+		// }, 1);
+
+		function interval(func, wait, times) {
+		    var interv = function(w, t){
+		        return function(){
+		            if(typeof t === "undefined" || t-- > 0){
+		                setTimeout(interv, w);
+		                try{
+		                    func.call(null);
+		                }
+		                catch(e){
+		                    t = 0;
+		                    throw e.toString();
+		                }
+		            }
+		        };
+		    }(wait, times);
+
+		    setTimeout(interv, wait);
+		};
+
+		// interval(function(){
+	 //        count++;
+		// 	//$("#counter").html(count);
+		// 	if (count % 200 === 0) { 
+		// 		document.body.style.backgroundColor = "#00FF00";
+		// 		setTimeout(function() {
+		// 	        document.body.style.backgroundColor = "#FFFFFF"; 
+		// 	    }, 1); 
+				
+		// 	}
+	 //    }, 1, 2000);
+
+	
+		var update1 = function() {
+			count++;
+			$("#counter").html(count);
+			if (count % 50000 === 0) {
+				document.body.style.backgroundColor = "#00FF00";
+				setImmediate(update2);
+			}
+			setImmediate(update1);
+		};
+		var update2 = function() {
+			document.body.style.backgroundColor = "#FFFFFF"; 
+		}
+
+		setImmediate(update1);
+
+
+	 //    function step(timestamp) {
+		// 	count++;
+		// 	//$("#counter").html(count);
+		// 	if (count % 200 === 0) document.body.style.backgroundColor = "#00FF00"; 
+		// 	else document.body.style.backgroundColor = "#FFFFFF"; 
+		// 	window.requestAnimationFrame(step);
+		// }
+		// window.requestAnimationFrame(step);
+
+	</script>
+</body>
+
+
+</html>
