@@ -1,8 +1,28 @@
 <html>
 
 <body>
+
+	<br><br><br>
+
 	<center>
-	What is <b id="num1"> <b id="op"> <b id="num2">?
+	<h1>
+		What is <b id="num1">a</b> <b id="op"></b> <b id="num2"></b>?
+	</h1>
+
+	<br><br>
+
+	<input type="text" id="ans" />
+
+	<br><br>
+
+	<h1>
+		Number correct: <b id="score">0</b>
+
+		<br><br>
+
+		Time left: <b id="time">300</b>
+	</h1>
+
 	</center>
 
 	<div id="counter">0</div>
@@ -10,71 +30,113 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="setImmediate.js"></script>
 	<script>
-		var count = 0;
-		// setInterval(function() { 
-		// 	count++;
-		// 	$("#counter").html(count);
-		// 	if (count % 200 === 0) document.body.style.backgroundColor = "#00FF00"; 
-		// 	else document.body.style.backgroundColor = "#FFFFFF"; 
-		// }, 1);
 
-		function interval(func, wait, times) {
-		    var interv = function(w, t){
-		        return function(){
-		            if(typeof t === "undefined" || t-- > 0){
-		                setTimeout(interv, w);
-		                try{
-		                    func.call(null);
-		                }
-		                catch(e){
-		                    t = 0;
-		                    throw e.toString();
-		                }
-		            }
-		        };
-		    }(wait, times);
-
-		    setTimeout(interv, wait);
-		};
-
-		// interval(function(){
-	 //        count++;
-		// 	//$("#counter").html(count);
-		// 	if (count % 200 === 0) { 
-		// 		document.body.style.backgroundColor = "#00FF00";
-		// 		setTimeout(function() {
-		// 	        document.body.style.backgroundColor = "#FFFFFF"; 
-		// 	    }, 1); 
-				
-		// 	}
-	 //    }, 1, 2000);
-
-	
-		var update1 = function() {
-			count++;
-			$("#counter").html(count);
-			if (count % 50000 === 0) {
-				document.body.style.backgroundColor = "#00FF00";
-				setImmediate(update2);
-			}
-			setImmediate(update1);
-		};
-		var update2 = function() {
-			document.body.style.backgroundColor = "#FFFFFF"; 
+		function getRandomInt(max) {
+			return Math.floor(Math.random() * Math.floor(max));
 		}
 
-		setImmediate(update1);
+		function getAns(num1, num2, op) {
+			if (op === "x") {
+				return num1 * num2;
+			}
+			if (op === "/") {
+				return num1 / num2;
+			}
+			if (op === "+") {
+				return num1 + num2;
+			}
+			if (op === "-") {
+				return num1 - num2;
+			}
+		}
 
+		var possibleOps = ["x", "/", "+", "-"];
 
-	 //    function step(timestamp) {
-		// 	count++;
-		// 	//$("#counter").html(count);
-		// 	if (count % 200 === 0) document.body.style.backgroundColor = "#00FF00"; 
-		// 	else document.body.style.backgroundColor = "#FFFFFF"; 
-		// 	window.requestAnimationFrame(step);
-		// }
-		// window.requestAnimationFrame(step);
+		var score = 0;
+		var timeLeft = 300;
 
+		var num1 = getRandomInt(100);
+		var num2 = getRandomInt(100);
+		var op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
+		var ans = getAns(num1, num2, op);
+
+		$(document).ready(function() {
+			num1 = getRandomInt(100);
+			num2 = getRandomInt(100);
+			op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
+			ans = getAns(num1, num2, op);
+
+			$("#num1").text(num1 + "");
+			$("#op").text(op);
+			$("#num2").text(num2 + "");
+
+			$("#ans").on("change paste keyup", function() {
+    			var num = parseInt($("#ans").val());
+
+				console.log(num);
+				console.log(ans);
+
+				if (num === ans) {
+					score++;
+
+					num1 = getRandomInt(100);
+					num2 = getRandomInt(100);
+					op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
+					ans = getAns(num1, num2, op);
+
+					$("#num1").text(num1 + "");
+					$("#op").text(op);
+					$("#num2").text(num2 + "");
+
+					$("#score").val(score);
+				}
+			});
+
+			var count = 0;
+
+			function interval(func, wait, times) {
+			    var interv = function(w, t){
+			        return function(){
+			            if(typeof t === "undefined" || t-- > 0){
+			                setTimeout(interv, w);
+			                try{
+			                    func.call(null);
+			                }
+			                catch(e){
+			                    t = 0;
+			                    throw e.toString();
+			                }
+			            }
+			        };
+			    } (wait, times);
+
+			    setTimeout(interv, wait);
+			};
+
+		
+			var update1 = function() {
+				count++;
+				$("#counter").html(count);
+				if (count % 1000 === 0) {
+					document.body.style.backgroundColor = "#00FF00";
+					setImmediate(update2);
+				}
+
+				if (count % 3000 === 0 && timeLeft > 0) {
+					timeLeft--;
+					$("#time").text(timeLeft + "");
+				}
+
+				setImmediate(update1);
+			};
+
+			var update2 = function() {
+				document.body.style.backgroundColor = "#FFFFFF"; 
+			}
+
+			setImmediate(update1);
+
+		});
 	</script>
 </body>
 
