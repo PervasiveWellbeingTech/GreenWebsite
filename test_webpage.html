@@ -6,6 +6,10 @@
 
 	<center>
 	<h1>
+		Time left: <b id="time">300</b>
+
+		<br><br>
+
 		What is <b id="num1">a</b> <b id="op"></b> <b id="num2"></b>?
 	</h1>
 
@@ -20,7 +24,6 @@
 
 		<br><br>
 
-		Time left: <b id="time">300</b>
 	</h1>
 
 	</center>
@@ -30,6 +33,14 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="setImmediate.js"></script>
 	<script>
+
+		var INTERVENTION = 0; // 0 = nothing, 1 = just green, 2 = flashes
+		// Num correct:
+		// Cond0: 9
+		// Cond1: 
+		// Cond2: 
+
+		if (INTERVENTION === 1) document.body.style.backgroundColor = "#00FF00";
 
 		function getRandomInt(max) {
 			return Math.floor(Math.random() * Math.floor(max));
@@ -50,20 +61,50 @@
 			}
 		}
 
+		function getFactors(num) {
+		  const isEven = num % 2 === 0;
+		  let inc = isEven ? 1 : 2;
+		  let factors = [1, num];
+
+		  for (let curFactor = isEven ? 2 : 3; Math.pow(curFactor, 2) <= num; curFactor += inc) {
+		    if (num % curFactor !== 0) continue;
+		    factors.push(curFactor);
+		    let compliment = num / curFactor;
+		    if (compliment !== curFactor) factors.push(compliment);
+		  }
+
+		  return factors;
+		}
+
 		var possibleOps = ["x", "/", "+", "-"];
 
 		var score = 0;
-		var timeLeft = 300;
+		var timeLeft = 420;
 
-		var num1 = getRandomInt(100);
-		var num2 = getRandomInt(100);
 		var op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
+		var range = 30;
+		if (op === "+" || op === "-") range = 10000;
+		var num1 = getRandomInt(range);
+		var num2 = getRandomInt(range);
+		if (op === "/") {
+			var divisors = getFactors(num1);
+			num2 = divisors[Math.floor(Math.random()*divisors.length)];
+			if (num2 === undefined) num2 = num1;
+		}
 		var ans = getAns(num1, num2, op);
 
 		$(document).ready(function() {
-			num1 = getRandomInt(100);
-			num2 = getRandomInt(100);
 			op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
+			range = 30;
+			if (op === "+" || op === "-") range = 10000;
+			num1 = getRandomInt(range);
+			num2 = getRandomInt(range);
+			if (op === "/") {
+				var divisors = getFactors(num1);
+				console.log(divisors);
+				num2 = divisors[Math.floor(Math.random()*divisors.length)];
+				if (num2 === undefined) num2 = num1;
+			}
 			ans = getAns(num1, num2, op);
 
 			$("#num1").text(num1 + "");
@@ -73,56 +114,45 @@
 			$("#ans").on("change paste keyup", function() {
     			var num = parseInt($("#ans").val());
 
-				console.log(num);
-				console.log(ans);
-
 				if (num === ans) {
 					score++;
 
-					num1 = getRandomInt(100);
-					num2 = getRandomInt(100);
 					op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
+					range = 30;
+					if (op === "+" || op === "-") range = 10000;
+					num1 = getRandomInt(range);
+					num2 = getRandomInt(range);
+					if (op === "/") {
+						var divisors = getFactors(num1);
+						num2 = divisors[Math.floor(Math.random()*divisors.length)];
+						if (num2 === undefined) num2 = num1;
+					}
 					ans = getAns(num1, num2, op);
 
 					$("#num1").text(num1 + "");
 					$("#op").text(op);
 					$("#num2").text(num2 + "");
 
-					$("#score").val(score);
+					$("#score").text(score + "");
+
+					$("#ans").val("");
 				}
 			});
 
 			var count = 0;
-
-			function interval(func, wait, times) {
-			    var interv = function(w, t){
-			        return function(){
-			            if(typeof t === "undefined" || t-- > 0){
-			                setTimeout(interv, w);
-			                try{
-			                    func.call(null);
-			                }
-			                catch(e){
-			                    t = 0;
-			                    throw e.toString();
-			                }
-			            }
-			        };
-			    } (wait, times);
-
-			    setTimeout(interv, wait);
-			};
-
 		
 			var update1 = function() {
 				count++;
 				$("#counter").html(count);
-				if (count % 1000 === 0) {
-					document.body.style.backgroundColor = "#00FF00";
-					setImmediate(update2);
+
+				if (INTERVENTION === 2) {
+					if (count % 3000 === 0) {
+						document.body.style.backgroundColor = "#00FF00";
+						setImmediate(update2);
+					}
 				}
 
-				if (count % 3000 === 0 && timeLeft > 0) {
+				if (count % 4000 === 0 && timeLeft > 0) {
 					timeLeft--;
 					$("#time").text(timeLeft + "");
 				}
