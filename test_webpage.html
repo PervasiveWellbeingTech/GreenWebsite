@@ -6,7 +6,7 @@
 
 	<center>
 	<h1>
-		Time left: <b id="time">300</b>
+		Time left: <b id="time">600</b>
 
 		<br><br>
 
@@ -15,7 +15,7 @@
 
 	<br><br>
 
-	<input type="text" id="ans" />
+	<input type="number" id="ans" />
 
 	<br><br>
 
@@ -34,11 +34,8 @@
 	<script src="setImmediate.js"></script>
 	<script>
 
-		var INTERVENTION = 0; // 0 = nothing, 1 = just green, 2 = flashes
-		// Num correct:
-		// Cond0: 9
-		// Cond1: 
-		// Cond2: 
+		var INTERVENTION = 2; // 0 = nothing, 1 = just green, 2 = flashes 
+		// order: 
 
 		if (INTERVENTION === 1) document.body.style.backgroundColor = "#00FF00";
 
@@ -79,11 +76,12 @@
 		var possibleOps = ["x", "/", "+", "-"];
 
 		var score = 0;
-		var timeLeft = 420;
+		var timeLeft = 600;
 
 		var op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
-		var range = 30;
+		var range = 100000;
 		if (op === "+" || op === "-") range = 10000;
+		if (op === "x") range = 500;
 		var num1 = getRandomInt(range);
 		var num2 = getRandomInt(range);
 		if (op === "/") {
@@ -95,8 +93,9 @@
 
 		$(document).ready(function() {
 			op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
-			range = 30;
+			range = 1000000;
 			if (op === "+" || op === "-") range = 10000;
+			if (op === "x") range = 500;
 			num1 = getRandomInt(range);
 			num2 = getRandomInt(range);
 			if (op === "/") {
@@ -118,8 +117,9 @@
 					score++;
 
 					op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
-					range = 30;
+					range = 1000000;
 					if (op === "+" || op === "-") range = 10000;
+					if (op === "x") range = 500;
 					num1 = getRandomInt(range);
 					num2 = getRandomInt(range);
 					if (op === "/") {
@@ -152,6 +152,13 @@
 					}
 				}
 
+				if (INTERVENTION === 3) {
+					if (count % 900 === 0) {
+						document.body.style.backgroundColor = "#00FF00";
+						setImmediate(update2);
+					}
+				}
+	
 				if (count % 4000 === 0 && timeLeft > 0) {
 					timeLeft--;
 					$("#time").text(timeLeft + "");
