@@ -6,11 +6,15 @@
 
 	<center>
 	<h1>
-		Time left: <b id="time">600</b>
+		Total time left: <b id="time">600</b>
 
 		<br><br>
 
-		What is <b id="num1">a</b> <b id="op"></b> <b id="num2"></b>?
+		Time to type this number: <b id="timeProblem">4</b>
+
+		<br><br>
+
+		Type the number <b id="num">123456</b>.
 	</h1>
 
 	<br><br>
@@ -20,7 +24,7 @@
 	<br><br>
 
 	<h1>
-		Number correct: <b id="score">0</b>
+		Score: <b id="score">0</b>
 
 		<br><br>
 
@@ -34,8 +38,12 @@
 	<script src="setImmediate.js"></script>
 	<script>
 
-		var INTERVENTION = 2; // 0 = nothing, 1 = just green, 2 = flashes 
-		// order: 
+		/*
+		 * Stressor from: https://link.springer.com/article/10.1007/s00421-004-1055-z
+		 * "The effect of mental stress on heart rate variability and blood pressure during computer work"
+		 */
+
+		var INTERVENTION = 3; // 0 = nothing, 1 = just green, 3 = flashes 
 
 		if (INTERVENTION === 1) document.body.style.backgroundColor = "#00FF00";
 
@@ -43,103 +51,26 @@
 			return Math.floor(Math.random() * Math.floor(max));
 		}
 
-		function getAns(num1, num2, op) {
-			if (op === "x") {
-				return num1 * num2;
-			}
-			if (op === "/") {
-				return num1 / num2;
-			}
-			if (op === "+") {
-				return num1 + num2;
-			}
-			if (op === "-") {
-				return num1 - num2;
-			}
-		}
-
-		function getFactors(num) {
-		  const isEven = num % 2 === 0;
-		  let inc = isEven ? 1 : 2;
-		  let factors = [1, num];
-
-		  for (let curFactor = isEven ? 2 : 3; Math.pow(curFactor, 2) <= num; curFactor += inc) {
-		    if (num % curFactor !== 0) continue;
-		    factors.push(curFactor);
-		    let compliment = num / curFactor;
-		    if (compliment !== curFactor) factors.push(compliment);
-		  }
-
-		  return factors;
-		}
-
-		var possibleOps = ["x", "/", "+", "-"];
-
 		var score = 0;
-		var timeLeft = 600;
-
-		var op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
-		var range = 100000;
-		if (op === "+" || op === "-") range = 10000;
-		if (op === "x") range = 500;
-		var num1 = getRandomInt(range);
-		var num2 = getRandomInt(range);
-		if (op === "/") {
-			var divisors = getFactors(num1);
-			num2 = divisors[Math.floor(Math.random()*divisors.length)];
-			if (num2 === undefined) num2 = num1;
-		}
-		var ans = getAns(num1, num2, op);
+		var currNumber = getRandomInt(999999);
+		$("#num").text(currNumber + "");
+		var timeProblem = 4;
+		var timeLeft = 240;
 
 		$(document).ready(function() {
-			op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
-			range = 1000000;
-			if (op === "+" || op === "-") range = 10000;
-			if (op === "x") range = 500;
-			num1 = getRandomInt(range);
-			num2 = getRandomInt(range);
-			if (op === "/") {
-				var divisors = getFactors(num1);
-				console.log(divisors);
-				num2 = divisors[Math.floor(Math.random()*divisors.length)];
-				if (num2 === undefined) num2 = num1;
-			}
-			ans = getAns(num1, num2, op);
 
-			$("#num1").text(num1 + "");
-			$("#op").text(op);
-			$("#num2").text(num2 + "");
+			var count = 0;
 
 			$("#ans").on("change paste keyup", function() {
     			var num = parseInt($("#ans").val());
-
-				if (num === ans) {
-					score++;
-
-					op = possibleOps[Math.floor(Math.random()*possibleOps.length)];
-					range = 1000000;
-					if (op === "+" || op === "-") range = 10000;
-					if (op === "x") range = 500;
-					num1 = getRandomInt(range);
-					num2 = getRandomInt(range);
-					if (op === "/") {
-						var divisors = getFactors(num1);
-						num2 = divisors[Math.floor(Math.random()*divisors.length)];
-						if (num2 === undefined) num2 = num1;
-					}
-					ans = getAns(num1, num2, op);
-
-					$("#num1").text(num1 + "");
-					$("#op").text(op);
-					$("#num2").text(num2 + "");
-
-					$("#score").text(score + "");
-
-					$("#ans").val("");
-				}
-			});
-
-			var count = 0;
+    			if (num === currNumber) {
+    				score++;
+    				currNumber = getRandomInt(999999);
+    				$("#num").text(currNumber + "");
+    				$("#score").text(score + "");
+    				$("#ans").val("");
+    			}
+    		});
 		
 			var update1 = function() {
 				count++;
@@ -161,7 +92,14 @@
 	
 				if (count % 4000 === 0 && timeLeft > 0) {
 					timeLeft--;
+					timeProblem--;
+					if (timeProblem < 0) {
+						timeProblem = 4;
+						score--;
+						$("#score").text(score + "");
+					}
 					$("#time").text(timeLeft + "");
+					$("#timeProblem").text(timeProblem + "");
 				}
 
 				setImmediate(update1);
