@@ -41,6 +41,16 @@
 		/*
 		 * Stressor from: https://link.springer.com/article/10.1007/s00421-004-1055-z
 		 * "The effect of mental stress on heart rate variability and blood pressure during computer work"
+		 *
+		 * see what part of the brain is activated by the green light
+		 * do a stressor that is correlated to this
+		 * which part of the brain is activated matters --> this is part of the conversation with Ibrahim!!
+		 * what type of task is interesting? 
+		 * our current one is 
+		 * which part of the brain is activated
+		 * come up with 1 or 2 PRECISE stressors, which are targeted
+		 * maybe reach out to neuroscience people who know about the brain --> speak with Ibrahim first!
+		 * Interval validity vs external validity (vs ecological validity). Next time: show implementation. Read carefully the literature on color simulation. And definitely control * for color-based seizures.
 		 */
 
 		var INTERVENTION = 3; // 0 = nothing, 1 = just green, 3 = flashes 
@@ -74,23 +84,27 @@
 		
 			var update1 = function() {
 				count++;
-				$("#counter").html(count);
+				//$("#counter").html(count);
 
 				if (INTERVENTION === 2) {
 					if (count % 3000 === 0) {
-						document.body.style.backgroundColor = "#00FF00";
-						setImmediate(update2);
+						//document.body.style.backgroundColor = "#00FF00";
+						window.requestAnimationFrame(update2);
+					} else {
+						document.body.style.backgroundColor = "#FFFFFF"; 
 					}
 				}
 
 				if (INTERVENTION === 3) {
-					if (count % 900 === 0) {
-						document.body.style.backgroundColor = "#00FF00";
-						setImmediate(update2);
+					if (count % 20 === 0) {
+						//document.body.style.backgroundColor = "#00FF00";
+						window.requestAnimationFrame(update2);
+					} else {
+						//document.body.style.backgroundColor = "#FFFFFF"; 
 					}
 				}
 	
-				if (count % 4000 === 0 && timeLeft > 0) {
+				if (count % 16000 === 0 && timeLeft > 0) {
 					timeLeft--;
 					timeProblem--;
 					if (timeProblem < 0) {
@@ -106,10 +120,18 @@
 			};
 
 			var update2 = function() {
+				//console.log('here2');
 				document.body.style.backgroundColor = "#FFFFFF"; 
+				window.requestAnimationFrame(update3);
 			}
 
-			setImmediate(update1);
+			var update3 = function() {
+				//console.log('here3');
+				document.body.style.backgroundColor = "#00FF00"; 
+			}
+
+			//setImmediate(update1);
+			window.requestAnimationFrame(update1);
 
 		});
 	</script>
