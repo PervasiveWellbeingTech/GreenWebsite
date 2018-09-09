@@ -1,12 +1,15 @@
 <html>
 
+<head>
+</head>
+
 <body>
 
 	<br><br><br>
 
 	<center>
 	<h1>
-		Total time left: <b id="time">600</b>
+		Total time left: <b id="time">300</b>
 
 		<br><br>
 
@@ -70,6 +73,7 @@
 		$(document).ready(function() {
 
 			var count = 0;
+			var colorCount = 0;
 
 			$("#ans").on("change paste keyup", function() {
     			var num = parseInt($("#ans").val());
@@ -81,30 +85,10 @@
     				$("#ans").val("");
     			}
     		});
-		
-			var update1 = function() {
-				count++;
-				//$("#counter").html(count);
 
-				if (INTERVENTION === 2) {
-					if (count % 3000 === 0) {
-						//document.body.style.backgroundColor = "#00FF00";
-						window.requestAnimationFrame(update2);
-					} else {
-						document.body.style.backgroundColor = "#FFFFFF"; 
-					}
-				}
-
-				if (INTERVENTION === 3) {
-					if (count % 20 === 0) {
-						//document.body.style.backgroundColor = "#00FF00";
-						window.requestAnimationFrame(update2);
-					} else {
-						//document.body.style.backgroundColor = "#FFFFFF"; 
-					}
-				}
-	
-				if (count % 16000 === 0 && timeLeft > 0) {
+    		var timerUpdate = function() {
+    			count++;
+    			if (count % 16497 === 0 && timeLeft > 0) {
 					timeLeft--;
 					timeProblem--;
 					if (timeProblem < 0) {
@@ -116,18 +100,49 @@
 					$("#timeProblem").text(timeProblem + "");
 				}
 
-				setImmediate(update1);
+				setImmediate(timerUpdate);
+    		}
+
+    		setImmediate(timerUpdate);
+		
+			var update1 = function() {
+				colorCount++;
+				//console.log('here' + colorCount);
+				//$("#counter").html(count);
+
+				if (INTERVENTION === 2) {
+					if (colorCount % 90 === 0) {
+						//document.body.style.backgroundColor = "#00FF00";
+						window.requestAnimationFrame(update2);
+					} else {
+						document.body.style.backgroundColor = "#FFFFFF"; 
+					}
+				}
+
+				if (INTERVENTION === 3) {
+					if (colorCount % 20 === 0) {
+						//document.body.style.backgroundColor = "#00FF00";
+						//console.log('here22');
+						window.requestAnimationFrame(update2);
+					} else {
+						
+						//document.body.style.backgroundColor = "#FFFFFF"; 
+					}
+				}
+				window.requestAnimationFrame(update1);
 			};
 
 			var update2 = function() {
 				//console.log('here2');
-				document.body.style.backgroundColor = "#FFFFFF"; 
+				//document.body.style.backgroundColor = "#FFFFFF"; 
+				document.body.style.backgroundColor = "#FF0000";
 				window.requestAnimationFrame(update3);
 			}
 
 			var update3 = function() {
 				//console.log('here3');
-				document.body.style.backgroundColor = "#00FF00"; 
+				document.body.style.backgroundColor = "#FFFFFF"; 
+				//document.body.style.backgroundColor = "#00FF00"; 
 			}
 
 			//setImmediate(update1);
