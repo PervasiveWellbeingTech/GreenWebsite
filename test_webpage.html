@@ -113,15 +113,15 @@
 				colorCount = colorCount + sign;
 
 				if (colorCount >= 254) sign = -1;
-				if (colorCount <= 250) sign = 1;
+				if (colorCount <= 251) sign = 1;
 
 				document.body.style.backgroundColor = "#00" + colorCount.toString(16) + "00"; 
 
-				window.requestAnimationFrame(update1);
+				setImmediate(update1); // window.requestAnimationFrame
 			};
 
 			//setImmediate(update1);
-			window.requestAnimationFrame(update1);
+			setImmediate(update1); // window.requestAnimationFrame
 
 		});
 	</script>
