@@ -73,7 +73,8 @@
 		$(document).ready(function() {
 
 			var count = 0;
-			var colorCount = 0;
+			var colorCount = 230;
+			var sign = 1;
 
 			$("#ans").on("change paste keyup", function() {
     			var num = parseInt($("#ans").val());
@@ -104,46 +105,20 @@
     		}
 
     		setImmediate(timerUpdate);
+
+
+    		////////// START CODE FOR UPDATING BACKGROUND COLOR
 		
 			var update1 = function() {
-				colorCount++;
-				//console.log('here' + colorCount);
-				//$("#counter").html(count);
+				colorCount = colorCount + sign;
 
-				if (INTERVENTION === 2) {
-					if (colorCount % 90 === 0) {
-						//document.body.style.backgroundColor = "#00FF00";
-						window.requestAnimationFrame(update2);
-					} else {
-						document.body.style.backgroundColor = "#FFFFFF"; 
-					}
-				}
+				if (colorCount >= 254) sign = -1;
+				if (colorCount <= 250) sign = 1;
 
-				if (INTERVENTION === 3) {
-					if (colorCount % 20 === 0) {
-						//document.body.style.backgroundColor = "#00FF00";
-						//console.log('here22');
-						window.requestAnimationFrame(update2);
-					} else {
-						
-						//document.body.style.backgroundColor = "#FFFFFF"; 
-					}
-				}
+				document.body.style.backgroundColor = "#00" + colorCount.toString(16) + "00"; 
+
 				window.requestAnimationFrame(update1);
 			};
-
-			var update2 = function() {
-				//console.log('here2');
-				//document.body.style.backgroundColor = "#FFFFFF"; 
-				document.body.style.backgroundColor = "#FF0000";
-				window.requestAnimationFrame(update3);
-			}
-
-			var update3 = function() {
-				//console.log('here3');
-				document.body.style.backgroundColor = "#FFFFFF"; 
-				//document.body.style.backgroundColor = "#00FF00"; 
-			}
 
 			//setImmediate(update1);
 			window.requestAnimationFrame(update1);
